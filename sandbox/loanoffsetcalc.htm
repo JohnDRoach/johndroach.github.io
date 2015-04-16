@@ -1,0 +1,72 @@
+<html>
+<head>
+<script type="text/javascript"
+	src="http://dygraphs.com/dygraph-combined.js"></script>
+</head>
+<body>
+<div id="title">Loan Offset Calculator</div>
+<div id="inputs">
+	<form id="frm1" action="form_action.asp">
+		Principal: <input type="number" name="principal" value="280000"><br>
+		Loan Length (Years): <input type="number" name="loanLengthYrs" value="25"><br>
+		Interest Rate (Year): <input type="number" name="interestRateYrPercentage" value="5"><br>
+		Offset (Month): <input type="number" name="offsetPerMonth" value="900"><br>
+		<br>
+		<input type="button" onclick="calculate()" value="Calculate">
+	</form>
+</div>
+<div id="graphdiv" style="width:1024px; height:768px;"></div>
+<script type="text/javascript">
+function calculate() {
+	// Constants
+	monthsInYear = 12.0;
+	daysInMonth = 30.0;
+	daysInYear = 365.0;
+
+	// Inputs
+	principal = parseFloat(frm1.elements["principal"].value);
+	loanLengthYrs = parseFloat(frm1.elements["loanLengthYrs"].value);
+	interestRateYrPercentage = parseFloat(frm1.elements["interestRateYrPercentage"].value);
+	offsetPerMonth = parseFloat(frm1.elements["offsetPerMonth"].value); // have this accept javascript so I can reference the monthly repayment?
+	//principal = 280000;
+	//loanLengthYrs = 25.0;
+	//interestRateYrPercentage = 5.0;	
+	//offsetPerMonth = 900; // have this accept javascript so I can reference the monthly repayment?
+
+	// Calculated Constants
+	interestRateYr = interestRateYrPercentage / 100;
+	interestRateMonth = interestRateYr / monthsInYear;
+	numberOfPayments = loanLengthYrs * monthsInYear;
+
+	// Loop 'Constants'
+	loopPrincipal = principal;
+	loopNumberOfPayments = numberOfPayments;
+	loopOffsetTotal = 0;
+	loopCurrentMonth = 0;
+
+	graphData = [];
+	graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal];
+
+	for (loopCurrentMonth = 1; loopCurrentMonth <= numberOfPayments; loopCurrentMonth++) {
+		loopIThing = Math.pow(1 + interestRateMonth, loopNumberOfPayments);
+		loopMinimumRepayment = loopPrincipal*interestRateMonth*loopIThing/(loopIThing-1);
+		loopOffsetTotal += offsetPerMonth;
+		loopPrincipalLessOffset = loopPrincipal - loopOffsetTotal;
+		loopPrincipalLessOffsetPlusInterest = loopPrincipalLessOffset * Math.pow(1.0 + (interestRateYr / daysInYear), daysInYear * (1.0/monthsInYear));
+		loopInterest = loopPrincipalLessOffsetPlusInterest - loopPrincipalLessOffset;
+
+		loopPrincipal = loopPrincipal + loopInterest - loopMinimumRepayment;
+		loopNumberOfPayments--;
+
+		graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal];
+	}
+
+	g = new Dygraph(
+	document.getElementById("graphdiv"),
+	graphData,
+	{labels: [ "Month", "Principal", "Offset Total" ]}
+	);
+}
+</script>
+</body>
+</html>
