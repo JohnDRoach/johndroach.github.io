@@ -3,19 +3,31 @@
 <script type="text/javascript"
 	src="http://dygraphs.com/dygraph-combined.js"></script>
 </head>
+<script src = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" ></script>
+<link rel='stylesheet' href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
 <body>
-<div id="title">Loan Offset Calculator</div>
+<div class="container">
+<div id="title" class="jumbotron"><h1>Loan Offset Calculator </h1></div>
 <div id="inputs">
-	<form id="frm1" action="form_action.asp">
-		Principal: <input type="number" name="principal" value="280000"><br>
-		Loan Length (Years): <input type="number" name="loanLengthYrs" value="25"><br>
-		Interest Rate (Year): <input type="number" name="interestRateYrPercentage" value="5"><br>
-		Offset (Month): <input type="number" name="offsetPerMonth" value="900"><br>
-		<br>
-		<input type="button" onclick="calculate()" value="Calculate">
+	<form id="frm1">
+	<div class="form-group">
+		<label for="principal">Principal:</label> <input type="number" name="principal" id="principal" value="280000" class="form-control"/>
+		</div>
+		<div class="form-group">
+		<label for="loanLengthYrs">Loan Length (Years):</label> <input type="number" name="loanLengthYrs" id="loanLengthYrs" value="25"  class="form-control"/>
+		
+		</div><div class="form-group">
+		<label for="interestRateYrPercentage">Interest Rate (Year):</label> <input type="number" name="interestRateYrPercentage" id="interestRateYrPercentage" value="5"  class="form-control"/>
+		</div>
+		<div class="form-group">
+		<label for="offsetPerMonth">Offset (Month):</label> <input type="number" name="offsetPerMonth" value="900"  class="form-control"/>
+		</div>
+		<div class="form-group">
+		<input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
 	</form>
 </div>
-<div id="graphdiv" style="width:1024px; height:768px;"></div>
+<div id="graphdiv" class="row" />
+</div>
 <script type="text/javascript">
 function calculate() {
 	// Constants
