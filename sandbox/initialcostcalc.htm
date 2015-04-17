@@ -1,0 +1,210 @@
+<html>
+<head>
+<script type="text/javascript"
+	src="http://dygraphs.com/dygraph-combined.js"></script>
+</head>
+<script src = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" ></script>
+<link rel='stylesheet' href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
+<body>
+<div class="container">
+<div id="title" class="jumbotron"><h1>Initial Loan Cost Calculator </h1></div>
+<div id="inputs">
+  <form id="frm1">
+    <label>Inputs</label>
+    <div class="form-group">
+      <label for="housePrice">House Price:</label> <input type="number" id="housePrice" value="285000" class="form-control"/>
+    </div>
+    <div class="form-group">
+      <label for="deposit">Deposit:</label> <input type="number" id="deposit" value="32000" class="form-control"/>
+    </div>
+    
+    <label>Upfront Costs</label>
+    <div class="form-group">
+      <label for="pestBuilding">Pest and Building Inspection:</label> <input type="number" id="pestBuilding" value="500"  class="form-control"/>
+    </div>
+    <div class="form-group">
+      <label for="conveyancing">Conveyancing:</label> <input type="number" id="conveyancing" value="1500"  class="form-control"/>
+    </div>
+    <div class="form-group">
+      <label for="valuation">Valuation:</label> <input type="number" id="valuation" value="500"  class="form-control"/>
+    </div>
+    <div class="form-group">
+      <label for="stampDuty">Stamp Duty:</label> <input type="number" id="stampDuty" class="form-control" readonly/>
+    </div>
+
+    <label>The sad reality</label>
+    <div class="form-group">
+      <label for="realDeposit">Real Deposit:</label> <input type="number" id="realDeposit" class="form-control" readonly/>
+    </div>
+    <div class="form-group">
+      <label for="percentageRequired">Percentage Required:</label> <input type="number" id="percentageRequired" class="form-control" readonly/>
+    </div>
+
+    <label>Rolled into loan</label>
+    <div class="form-group">
+      <label for="lmi">Lenders Mortgage Insurance:</label> <input type="text" id="lmi" class="form-control" readonly/>
+    </div>
+    <div class="form-group">
+	    <label for="totalLoan">Total Loan Amount:</label> <input type="text" id="totalLoan" class="form-control" readonly/>
+    </div>
+
+    <div class="form-group">
+      <input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+function calcStampDuty(price) {
+  if(price < 14001) {
+    return 0.0125 * price;
+  }
+  if(price < 30001) {
+   return 175 + (0.015 * (price - 14000));
+  }
+  if(price < 80001) {
+    return 415 + (0.0175 * (price - 30000));
+  }
+  if(price < 300001) {
+    return 1290 + (0.035 * (price - 80000));
+  }
+  if(price < 1000001) {
+    return 8990 + (0.045 * (price - 300000));
+  }
+  if(price < 3000001) {
+    return 40490 + (0.055 * (price - 1000000));
+  }
+  return 150490 + (0.07 * (price - 3000000));
+}
+
+function calcLmi(lvr, loanAmount) {
+  if(lvr < 80.01) {
+    return 0;
+  }
+  if(lvr < 82.01) {
+    if(loanAmount < 300001) {
+      return 0.005 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0056 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0077 * loanAmount;
+    }
+  }
+  if(lvr < 84.01) {
+    if(loanAmount < 300001) {
+      return 0.0065 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0084 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0108 * loanAmount;
+    }
+  }
+  if(lvr < 86.01) {
+    if(loanAmount < 300001) {
+      return 0.0086 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0106 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0134 * loanAmount;
+    }
+  }
+  if(lvr < 88.01) {
+    if(loanAmount < 300001) {
+      return 0.0103 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0145 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0161 * loanAmount;
+    }
+  }
+  if(lvr < 90.01) {
+    if(loanAmount < 300001) {
+      return 0.0131 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0175 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0216 * loanAmount;
+    }
+  }
+  if(lvr < 92.01) {
+    if(loanAmount < 300001) {
+      return 0.0203 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0265 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0354 * loanAmount;
+    }
+  }
+  if(lvr < 94.01) {
+    if(loanAmount < 300001) {
+      return 0.0228 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0299 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0420 * loanAmount;
+    }
+  }
+  if(lvr < 95.01) {
+    if(loanAmount < 300001) {
+      return 0.0264 * loanAmount;
+    }
+    if(loanAmount < 600001) {
+      return 0.0330 * loanAmount;
+    }
+    if(loanAmount < 1000000) {
+      return 0.0443 * loanAmount;
+    }
+  }
+}
+
+function calculate() {
+  var housePrice = parseFloat(document.getElementById('housePrice').value);
+  var deposit = parseFloat(document.getElementById('deposit').value);
+
+  var pestBuilding = parseFloat(document.getElementById('pestBuilding').value);
+  var conveyancing = parseFloat(document.getElementById('conveyancing').value);
+  var valuation = parseFloat(document.getElementById('valuation').value);
+  var stampDuty = calcStampDuty(housePrice);
+  var upFrontCosts = pestBuilding + conveyancing + valuation + stampDuty;
+  document.getElementById('stampDuty').value = stampDuty;
+  
+  var realDeposit = deposit - upFrontCosts;
+  var percentageRequired = 100 - (realDeposit / housePrice * 100);
+  document.getElementById('realDeposit').value = realDeposit;
+  document.getElementById('percentageRequired').value = percentageRequired;
+
+  if(housePrice > 1000000) {
+    document.getElementById('lmi').value = "Looking at $1,000,000 properties?";
+    document.getElementById('totalLoan').value = "Go talk to a professional man!";
+  }
+  else if(percentageRequired > 95) {
+    document.getElementById('lmi').value = "Cannot lend more than 95% of the purchase price!";
+    document.getElementById('totalLoan').value = "No loan for you!";
+  }
+  else {
+    var loanAmount = housePrice - realDeposit;
+    var lmi = calcLmi(percentageRequired, loanAmount);
+    totalLoan = loanAmount + lmi;
+
+    document.getElementById('lmi').value = lmi;
+    document.getElementById('totalLoan').value = totalLoan;
+  }
+}
+</script>
+</body>
+</html>
+
