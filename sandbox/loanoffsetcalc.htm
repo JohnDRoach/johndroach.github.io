@@ -26,7 +26,7 @@
 		<input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
 	</form>
 </div>
-<div id="graphdiv" class="row" />
+<div id="graphdiv" style="width:1024px; height:768px;" />
 </div>
 <script type="text/javascript">
 function calculate() {
@@ -40,10 +40,6 @@ function calculate() {
 	loanLengthYrs = parseFloat(frm1.elements["loanLengthYrs"].value);
 	interestRateYrPercentage = parseFloat(frm1.elements["interestRateYrPercentage"].value);
 	offsetPerMonth = parseFloat(frm1.elements["offsetPerMonth"].value); // have this accept javascript so I can reference the monthly repayment?
-	//principal = 280000;
-	//loanLengthYrs = 25.0;
-	//interestRateYrPercentage = 5.0;	
-	//offsetPerMonth = 900; // have this accept javascript so I can reference the monthly repayment?
 
 	// Calculated Constants
 	interestRateYr = interestRateYrPercentage / 100;
@@ -55,9 +51,10 @@ function calculate() {
 	loopNumberOfPayments = numberOfPayments;
 	loopOffsetTotal = 0;
 	loopCurrentMonth = 0;
+	loopTotalInterest = 0;
 
 	graphData = [];
-	graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal];
+	graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal, loopTotalInterest];
 
 	for (loopCurrentMonth = 1; loopCurrentMonth <= numberOfPayments; loopCurrentMonth++) {
 		loopIThing = Math.pow(1 + interestRateMonth, loopNumberOfPayments);
@@ -67,16 +64,17 @@ function calculate() {
 		loopPrincipalLessOffsetPlusInterest = loopPrincipalLessOffset * Math.pow(1.0 + (interestRateYr / daysInYear), daysInYear * (1.0/monthsInYear));
 		loopInterest = loopPrincipalLessOffsetPlusInterest - loopPrincipalLessOffset;
 
+		loopTotalInterest += loopInterest;
 		loopPrincipal = loopPrincipal + loopInterest - loopMinimumRepayment;
 		loopNumberOfPayments--;
 
-		graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal];
+		graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal, loopTotalInterest];
 	}
 
 	g = new Dygraph(
 	document.getElementById("graphdiv"),
 	graphData,
-	{labels: [ "Month", "Principal", "Offset Total" ]}
+	{labels: [ "Month", "Principal", "Offset Total", "Interest Total" ]}
 	);
 }
 </script>
