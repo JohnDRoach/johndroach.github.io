@@ -61,8 +61,14 @@ function calculate() {
 		loopMinimumRepayment = loopPrincipal*interestRateMonth*loopIThing/(loopIThing-1);
 		loopOffsetTotal += offsetPerMonth;
 		loopPrincipalLessOffset = loopPrincipal - loopOffsetTotal;
-		loopPrincipalLessOffsetPlusInterest = loopPrincipalLessOffset * Math.pow(1.0 + (interestRateYr / daysInYear), daysInYear * (1.0/monthsInYear));
-		loopInterest = loopPrincipalLessOffsetPlusInterest - loopPrincipalLessOffset;
+		
+		if(loopPrincipalLessOffset < 0) {
+			loopInterest = 0;
+		}
+		else {
+			loopPrincipalLessOffsetPlusInterest = loopPrincipalLessOffset * Math.pow(1.0 + (interestRateYr / daysInYear), daysInYear * (1.0/monthsInYear));
+			loopInterest = loopPrincipalLessOffsetPlusInterest - loopPrincipalLessOffset;	
+		}
 
 		loopTotalInterest += loopInterest;
 		loopPrincipal = loopPrincipal + loopInterest - loopMinimumRepayment;
