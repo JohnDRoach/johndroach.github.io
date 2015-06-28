@@ -52,9 +52,11 @@ function calculate() {
 	loopOffsetTotal = 0;
 	loopCurrentMonth = 0;
 	loopTotalInterest = 0;
+	loopMinimumRepayment = 0;
+	loopOffsetForMonth = 0;
 
 	graphData = [];
-	graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal, loopTotalInterest];
+	graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal, loopTotalInterest, loopMinimumRepayment, loopOffsetForMonth];
 
 	for (loopCurrentMonth = 1; loopCurrentMonth <= numberOfPayments; loopCurrentMonth++) {
 		loopIThing = Math.pow(1 + interestRateMonth, loopNumberOfPayments);
