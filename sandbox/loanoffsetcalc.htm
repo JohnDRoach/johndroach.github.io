@@ -20,7 +20,7 @@
 		<label for="interestRateYrPercentage">Interest Rate (Year):</label> <input type="number" name="interestRateYrPercentage" id="interestRateYrPercentage" value="5"  class="form-control"/>
 		</div>
 		<div class="form-group">
-		<label for="offsetPerMonth">Offset (Month):</label> <input type="number" name="offsetPerMonth" value="900"  class="form-control"/>
+		<label for="monthlyDeposit">Monthly Deposit: Repayment + Offset (Month):</label> <input type="number" name="monthlyDeposit" value="2500" class="form-control"/>
 		</div>
 		<div class="form-group">
 		<input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
@@ -39,7 +39,7 @@ function calculate() {
 	principal = parseFloat(frm1.elements["principal"].value);
 	loanLengthYrs = parseFloat(frm1.elements["loanLengthYrs"].value);
 	interestRateYrPercentage = parseFloat(frm1.elements["interestRateYrPercentage"].value);
-	offsetPerMonth = parseFloat(frm1.elements["offsetPerMonth"].value); // have this accept javascript so I can reference the monthly repayment?
+	monthlyDeposit = parseFloat(frm1.elements["monthlyDeposit"].value); // have this accept javascript so I can reference the monthly repayment?
 
 	// Calculated Constants
 	interestRateYr = interestRateYrPercentage / 100;
@@ -59,7 +59,8 @@ function calculate() {
 	for (loopCurrentMonth = 1; loopCurrentMonth <= numberOfPayments; loopCurrentMonth++) {
 		loopIThing = Math.pow(1 + interestRateMonth, loopNumberOfPayments);
 		loopMinimumRepayment = loopPrincipal*interestRateMonth*loopIThing/(loopIThing-1);
-		loopOffsetTotal += offsetPerMonth;
+		loopOffsetForMonth = monthlyDeposit - loopMinimumRepayment;
+		loopOffsetTotal += loopOffsetForMonth;
 		loopPrincipalLessOffset = loopPrincipal - loopOffsetTotal;
 		
 		if(loopPrincipalLessOffset < 0) {
@@ -74,13 +75,13 @@ function calculate() {
 		loopPrincipal = loopPrincipal + loopInterest - loopMinimumRepayment;
 		loopNumberOfPayments--;
 
-		graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal, loopTotalInterest];
+		graphData[loopCurrentMonth] = [loopCurrentMonth, loopPrincipal, loopOffsetTotal, loopTotalInterest, loopMinimumRepayment, loopOffsetForMonth];
 	}
 
 	g = new Dygraph(
 	document.getElementById("graphdiv"),
 	graphData,
-	{labels: [ "Month", "Principal", "Offset Total", "Interest Total" ]}
+	{labels: [ "Month", "Principal", "Offset Total", "Interest Total", "Minimum Repayment", "Offset Deposit" ]}
 	);
 }
 </script>
