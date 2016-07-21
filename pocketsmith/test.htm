@@ -7,8 +7,18 @@
 <link rel='stylesheet' href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
 <body>
 <div class="container">
-<div id="title" class="jumbotron"><h1>Initial Loan Cost Calculator </h1></div>
-<div id="inputs">
+<div id="title" class="jumbotron"><h1>PocketSmith Percentage of Gross Calculator</h1></div>
+<div id="controls">
+	<div class="form-group">
+		<label for="grossIncome">Gross Income:</label> <input type="number" id="grossIncome" value="50000" class="form-control"/>
+	</div>
+	<div class="form-group">
+		<input type="button" class="btn btn-primary" onclick="signIn()" value="Sign In" />
+		<input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
+	</div>
+</div>
+
+<div id="inputs2">
   <form id="frm1">
     <label>Inputs</label>
     <div class="form-group">
