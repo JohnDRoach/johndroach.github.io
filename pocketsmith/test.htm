@@ -1,7 +1,6 @@
 <html>
 <head>
-<script type="text/javascript"
-	src="http://dygraphs.com/dygraph-combined.js"></script>
+<!--<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>-->
 </head>
 <script src = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" ></script>
 <link rel='stylesheet' href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
@@ -9,65 +8,45 @@
 <div class="container">
 <div id="title" class="jumbotron"><h1>PocketSmith Percentage of Gross Calculator</h1></div>
 <div id="controls">
+  <form id="frm1">
 	<div class="form-group">
-		<label for="developerId">Developer Id:</label> <input type="number" id="developerId" value="xxxxx" class="form-control"/>
+		<label for="developerId">Developer Id:</label> <input type="text" id="developerId" value="xxxxx" class="form-control"/>
 	</div>
 	<div class="form-group">
 		<label for="grossIncome">Gross Income:</label> <input type="number" id="grossIncome" value="50000" class="form-control"/>
 	</div>
 	<div class="form-group">
-		<input type="button" class="btn btn-primary" onclick="signIn()" value="Sign In" />
+		<!--<input type="button" class="btn btn-primary" onclick="signIn()" value="Sign In" />-->
 		<input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
 	</div>
 </div>
+</form>
 
-<div id="inputs2">
-  <form id="frm1">
-    <label>Inputs</label>
-    <div class="form-group">
-      <label for="housePrice">House Price:</label> <input type="number" id="housePrice" value="285000" class="form-control"/>
-    </div>
-    <div class="form-group">
-      <label for="deposit">Deposit:</label> <input type="number" id="deposit" value="32000" class="form-control"/>
-    </div>
-    
-    <label>Upfront Costs</label>
-    <div class="form-group">
-      <label for="pestBuilding">Pest and Building Inspection:</label> <input type="number" id="pestBuilding" value="500"  class="form-control"/>
-    </div>
-    <div class="form-group">
-      <label for="conveyancing">Conveyancing:</label> <input type="number" id="conveyancing" value="1500"  class="form-control"/>
-    </div>
-    <div class="form-group">
-      <label for="valuation">Valuation:</label> <input type="number" id="valuation" value="500"  class="form-control"/>
-    </div>
-    <div class="form-group">
-      <label for="stampDuty">Stamp Duty:</label> <input type="number" id="stampDuty" class="form-control" readonly/>
-    </div>
-
-    <label>The sad reality</label>
-    <div class="form-group">
-      <label for="realDeposit">Real Deposit:</label> <input type="number" id="realDeposit" class="form-control" readonly/>
-    </div>
-    <div class="form-group">
-      <label for="percentageRequired">Percentage Required:</label> <input type="number" id="percentageRequired" class="form-control" readonly/>
-    </div>
-
-    <label>Rolled into loan</label>
-    <div class="form-group">
-      <label for="lmi">Lenders Mortgage Insurance:</label> <input type="text" id="lmi" class="form-control" readonly/>
-    </div>
-    <div class="form-group">
-	    <label for="totalLoan">Total Loan Amount:</label> <input type="text" id="totalLoan" class="form-control" readonly/>
-    </div>
-
-    <div class="form-group">
-      <input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
-    </div>
-  </form>
-</div>
+<div id="output" />
 
 <script type="text/javascript">
+function calculate() {
+  var developerKey = document.getElementById('developerId').value;
+  document.getElementById('output').innerHTML = "Key " + developerKey;
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET", "https://api.pocketsmith.com/v2/me", false);
+  xhttp.setRequestHeader("Authorization", "Key " + developerKey);
+  xhttp.send();
+  var response = JSON.parse(xhttp.responseText);
+  //var response = xhttp.responseText;
+  document.getElementById('output').innerHTML = response.id;
+  var id = response.id;
+
+  //var xhttp = new XMLHttpRequest();
+  var command = "https://api.pocketsmith.com/v2/users/" + id.toString() + "/transaction_accounts"
+  xhttp.open("GET", command, false);
+  xhttp.setRequestHeader("Authorization", "Key " + developerKey);
+  xhttp.send();
+  document.getElementById('output').innerHTML = xhttp.responseText;
+  ///v2/users/ id  /transaction_accounts
+}
+
 function signIn() {
   window.location = "https://my.pocketsmith.com/oauth/authorize#response_type=token&scope=\"user.read accounts.read transactions.read categories.read\"&redirect_uri=http://johndroach.github.io/pocketsmith/test.htm";
 }
@@ -188,7 +167,7 @@ function calcLmi(lvr, loanAmount) {
   }
 }
 
-function calculate() {
+function calculateOld() {
   var housePrice = parseFloat(document.getElementById('housePrice').value);
   var deposit = parseFloat(document.getElementById('deposit').value);
 
