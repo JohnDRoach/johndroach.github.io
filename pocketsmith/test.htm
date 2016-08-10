@@ -1,22 +1,18 @@
 <html>
 <head>
-<!--<script type="text/javascript" src="http://dygraphs.com/dygraph-combined.js"></script>-->
+
 </head>
 <script src = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" ></script>
 <link rel='stylesheet' href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
-<body>
+<body onload="onLoad()">
 <div class="container">
 <div id="title" class="jumbotron"><h1>PocketSmith Percentage of Gross Calculator</h1></div>
 <div id="controls">
   <form id="frm1">
 	<div class="form-group">
-		<label for="developerId">Developer Id:</label> <input type="text" id="developerId" value="xxxxx" class="form-control"/>
-	</div>
-	<div class="form-group">
 		<label for="grossIncome">Gross Income:</label> <input type="number" id="grossIncome" value="50000" class="form-control"/>
 	</div>
 	<div class="form-group">
-		<!--<input type="button" class="btn btn-primary" onclick="signIn()" value="Sign In" />-->
 		<input type="button" class="btn btn-primary" onclick="calculate()" value="Calculate" />
 	</div>
 </div>
@@ -25,26 +21,55 @@
 <div id="output" />
 
 <script type="text/javascript">
-function calculate() {
-  var developerKey = document.getElementById('developerId').value;
-  document.getElementById('output').innerHTML = "Key " + developerKey;
+var developerKey = "";
+var grossIncome = 0;
+var myId = "";
 
+function onLoad() {
+  var parameters = window.location.search.substring(1).split("|");
+  developerKey = parameters[0];
+  document.getElementById("grossIncome").value = parameters[1];
+  grossIncome = document.getElementById("grossIncome").value;
+  getUserId();
+}
+
+function getUserId() {
+  document.getElementById('output').innerHTML = "Getting Id...";
   var xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "https://api.pocketsmith.com/v2/me", false);
-  xhttp.setRequestHeader("Authorization", "Key " + developerKey);
-  xhttp.send();
-  var response = JSON.parse(xhttp.responseText);
-  //var response = xhttp.responseText;
-  document.getElementById('output').innerHTML = response.id;
-  var id = response.id;
 
-  //var xhttp = new XMLHttpRequest();
-  var command = "https://api.pocketsmith.com/v2/users/" + id.toString() + "/transaction_accounts"
-  xhttp.open("GET", command, false);
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      var response = JSON.parse(xhttp.responseText);
+      myId = response.id;
+      getAccounts();
+    } else if(xhttp.readyState == 4) {
+      document.getElementById('output').innerHTML = "There was an error getting the userId.";
+    }
+  }
+
+  xhttp.open("GET", "https://api.pocketsmith.com/v2/me", true);
   xhttp.setRequestHeader("Authorization", "Key " + developerKey);
   xhttp.send();
-  document.getElementById('output').innerHTML = xhttp.responseText;
+}
+
+function getAccounts() {
+  document.getElementById('output').innerHTML = "Getting accounts...";
   ///v2/users/ id  /transaction_accounts
+  var command = "https://api.pocketsmith.com/v2/users/" + myId.toString() + "/transaction_accounts"
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+      document.getElementById('output').innerHTML = xhttp.responseText;
+      var response = JSON.parse(xhttp.responseText);
+    } else if(xhttp.readyState == 4) {
+      document.getElementById('output').innerHTML = "There was an error getting accounts.";
+    }
+  }
+
+  xhttp.open("GET", command, true);
+  xhttp.setRequestHeader("Authorization", "Key " + developerKey);
+  xhttp.send();
 }
 
 function signIn() {
