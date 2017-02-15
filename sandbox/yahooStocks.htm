@@ -1,0 +1,50 @@
+<html>
+<head>
+
+</head>
+<script src = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" ></script>
+<link rel='stylesheet' href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" type="text/css" />
+<!--<body onload="onLoad()">-->
+<div class="container">
+<div id="title" class="jumbotron"><h1>Get Yahoo Stock Stats</h1></div>
+<div id="controls">
+  <form id="frm1" onsubmit="return false">
+	<div class="form-group">
+		<label for="stockKey">Stock Key:</label> <input type="string" id="stockKey" class="form-control"/>
+	</div>
+	<div class="form-group">
+		<input type="submit" class="btn btn-primary" onclick="calculate()" value="Calculate" />
+	</div>
+  </form>
+</div>
+
+<div id="output" />
+
+<script type="text/javascript">
+function calculate() {
+	document.getElementById('output').innerHTML = "Accessing yahoo...";
+
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			var response = JSON.parse(xhttp.responseText);
+			displayStats(response);
+		} else if(xhttp.readyState == 4) {
+			document.getElementById('output').innerHTML = "There was an error!";
+		}
+	}
+	var stock = document.getElementById('stockKey').value;
+	var uri = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22"
+	uri += stock
+	uri += ".AX%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="
+
+	xhttp.open("GET", uri, true);
+	xhttp.send();
+}
+
+function displayStats(response) {
+	document.getElementById('output').innerHTML = JSON.stringify(response);
+}
+</script>
+</body>
+</html>
