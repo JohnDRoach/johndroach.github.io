@@ -17,8 +17,35 @@
 	</div>
   </form>
 </div>
-
-<div id="output" />
+<div id="output" ></div>
+</br>
+<div id="helpfulOutput">
+	<table border="1">
+		<tr>
+			<td>
+				</br>
+				P/E = 25  Return = 4%</br>
+				P/E = 20  Return = 5%</br>
+				---- Below is good ----</br>
+				P/E = 15  Return = 6.6%</br>
+				P/E = 10  Return = 10%</br>
+				P/E =  5  Return = 20%</br>
+			</td>
+			<td>
+				P/BV =   5  Safety = 20%</br>
+				P/BV =   3  Safety = 33%</br>
+				P/BV =   2  Safety = 50%</br>
+				----- Below is good -----</br>
+				P/BV = 1.5  Safety = 67%</br>
+				P/BV =   1  Safety = 100%</br>
+				P/BV = 0.7  Safety = 143%</br>
+			</td>
+		</tr>
+	</table>
+	You want a 'company number' to be < 22.5
+</div>
+</br>
+<div id="dumpOutput" />
 
 <script type="text/javascript">
 function calculate() {
@@ -43,7 +70,16 @@ function calculate() {
 }
 
 function displayStats(response) {
-	document.getElementById('output').innerHTML = JSON.stringify(response);
+	var content = response.query.results.quote;
+	var priceToBook = content.PriceBook;
+	var pERatio = content.PERatio;
+	var companyNumber = priceToBook * pERatio;
+	document.getElementById('output').innerHTML = "<p>";
+	document.getElementById('output').innerHTML += "Price to Book: " + priceToBook + "</br>";
+	document.getElementById('output').innerHTML += "PE Ratio     : " + pERatio + "</br>";
+	document.getElementById('output').innerHTML += "Company No.  : " + companyNumber + "</br>";
+	document.getElementById('output').innerHTML += "</p>";
+	document.getElementById('dumpOutput').innerHTML = JSON.stringify(response);
 }
 </script>
 </body>
